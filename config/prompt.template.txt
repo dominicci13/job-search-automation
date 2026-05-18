@@ -26,7 +26,39 @@ FILES (use these exact paths — substituted from your .env):
 - JOBS_FOLDER: {BASE_DIR}/Jobs
 - BASE_RESUME: {BASE_DIR}/resume_base.docx
 
+================================================================================
+CV WRITING RULES — apply to every Professional Summary you generate
+================================================================================
+The Professional Summary describes what the candidate IS — their role, stack,
+and measurable wins. Logistics belong in OTHER sections of the resume or in
+screening Q&A — never in the summary.
+
+FORBIDDEN in any summary (English or Spanish). If your draft contains a phrase
+matching any category below, rewrite that sentence to remove it:
+
+  - sponsorship: "No visa sponsorship required", "Sin patrocinio"
+  - availability: "Available immediately", "Disponibilidad inmediata"
+  - time_zone_alignment: "US-business-hours aligned", "GMT-4", "EST overlap"
+  - engagement_platform: "via Toptal", "via Revelo", "via Torre"
+  - remote_mode_credential: "100% remote", "Fully remote from X"
+  - bilingual: "Bilingual English/Spanish (C2)", "Bilingüe"
+  - application_flow: "I'm applying for…", "Aplico a este rol"
+  - location_as_availability: "Based in X — US timezone aligned"
+
+Rule of thumb: the summary answers "What ARE you?" — not "How / when / where
+will you work?"
+
+The companion `create_resume.py` script validates the summary against these
+patterns at the DOCX-write step and EXITS with code 2 if any forbidden phrase
+slips through. Treat that exit code as a contract — fix the summary and retry.
+
+If `resume_tailoring_notes.md` (or any input you draw from) contains forbidden
+phrases, SILENTLY STRIP THEM when transferring to the actual summary. Don't
+propagate them.
+
+================================================================================
 MATCH SCORING (use for every job):
+================================================================================
   5 = Top-tier match for your primary tool (e.g., n8n / Make / Zapier listed as required)
   4 = Strong secondary match (e.g., Power Automate + Python both required)
   3 = Primary tool listed as one of several options
