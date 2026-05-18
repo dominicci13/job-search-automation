@@ -1,0 +1,128 @@
+You are running an automated job search for {NAME}. Today's date is {TODAY}.
+Execute ALL steps completely without asking for confirmation. Do not stop early.
+
+CANDIDATE PROFILE:
+- Name: {NAME}
+- Skills: {SKILLS}
+- Languages: {LANGUAGES}
+- Experience: {YEARS_TOTAL}+ years total ({YEARS_DOMAIN}+ years in {DOMAIN})
+- Location: {LOCATION}
+
+HARD FILTERS — apply to EVERY job in EVERY market:
+1. RECENCY: Skip if Date Posted is more than 7 days before {TODAY}. No exceptions.
+2. SALARY (Spain): Skip if salary is explicitly listed below EUR {SPAIN_FLOOR_EUR}/year.
+3. SALARY (US Remote / LATAM): Skip if salary is explicitly listed below USD {US_FLOOR_MONTHLY}/month
+   or USD {US_FLOOR_YEARLY}/year.
+   - Hourly rates: multiply by 164 hrs/mo. Below threshold = SKIP.
+4. SALARY NOT LISTED: include the job, mark salary as "Not listed".
+5. DEDUP: Skip if URL is already in already_found.
+
+If a job fails ANY of filters 1–3, do NOT include it in the digest, the Excel, or the
+folder creation. Count it in "Jobs skipped (old)" or "Jobs skipped (filter)" instead.
+
+FILES (use these exact paths — substituted from your .env):
+- DEDUP_FILE: {BASE_DIR}/found_jobs.txt
+- EXCEL: {BASE_DIR}/job_tracker.xlsx
+- JOBS_FOLDER: {BASE_DIR}/Jobs
+- BASE_RESUME: {BASE_DIR}/resume_base.docx
+
+MATCH SCORING (use for every job):
+  5 = Top-tier match for your primary tool (e.g., n8n / Make / Zapier listed as required)
+  4 = Strong secondary match (e.g., Power Automate + Python both required)
+  3 = Primary tool listed as one of several options
+  2 = General automation / RPA role, transferable skills
+  1 = Broad match, worth including but low priority
+
+================================================================================
+STEP 1 — Clean up dedup file + load already-found URLs
+================================================================================
+Read DEDUP_FILE. If it does not exist, create it empty.
+Remove any lines where the job was added more than 45 days ago (lines starting with
+a date prefix YYYY-MM-DD older than 45 days from {TODAY}).
+Write the cleaned list back to DEDUP_FILE.
+Store all remaining URLs as the "already_found" set.
+
+Entry format (one per line):
+  {TODAY} https://example.com/job/12345
+
+================================================================================
+STEP 2 — Search Spain jobs via Indeed MCP
+================================================================================
+Use the mcp__claude_ai_Indeed__search_jobs tool. Country code: "ES".
+
+Example queries (customize for your stack):
+  - "Power Automate Developer"
+  - "Power Platform Developer"
+  - "RPA Developer"
+  - "n8n automation developer"
+  - "Workflow Automation Specialist"
+  - "Low Code developer"
+  - "Integration Developer iPaaS"
+
+For each result:
+- Call mcp__claude_ai_Indeed__get_job_details for the full description
+- Apply the hard filters (recency, salary, dedup)
+- Assign a Match Score 1–5
+
+Also search local job boards via WebSearch + WebFetch (e.g., InfoJobs in Spain,
+Tecnoempleo, country-specific equivalents).
+
+================================================================================
+STEP 3 — Search US Remote jobs via Indeed MCP + WebSearch
+================================================================================
+Same flow as Step 2 but with country_code "US" and queries focused on remote roles.
+
+================================================================================
+STEP 4 — Search LATAM nearshore agencies (if applicable)
+================================================================================
+WebSearch + WebFetch on Revelo, HireLATAM, Hire With Near, Toptal, Torre.ai
+(or whichever agencies match your region).
+
+================================================================================
+STEP 4B — Process LinkedIn URLs from inbox alerts
+================================================================================
+A pre-step has extracted LinkedIn job URLs from your inbox into a file. Read
+that file (path passed via env var LINKEDIN_URLS_FILE) and WebFetch each URL
+that isn't already in already_found. Apply the same filters and scoring.
+
+================================================================================
+STEP 5 — Per-job artifact generation
+================================================================================
+For each job that passes filters:
+1. Add a row to EXCEL via openpyxl
+2. Create a subfolder under JOBS_FOLDER: "{Title} - {Company}/"
+3. Generate a tailored resume DOCX (call create_resume.py with the job's metadata)
+4. Write resume_tailoring_notes.md and linkedin_inmail.md
+5. For Score 4–5 jobs only: write company_notes.md with research
+
+================================================================================
+STEP 6 — Append to dedup file + emit digest
+================================================================================
+Append "{TODAY} <url>" for every new job to DEDUP_FILE.
+
+Then emit the email block in this EXACT format (the digest sender parses it):
+
+<<<EMAIL_START>>>
+Spain jobs found: <int>
+US Remote jobs found: <int>
+LATAM jobs found: <int>
+Total new jobs: <int>
+Folders created: <int>
+Jobs skipped (dup): <int>
+Jobs skipped (old): <int>
+Jobs skipped (filter): <int>
+
+NEW JOBS DETAIL
+
+[SCORE: 5/5] <Title> @ <Company>
+Market: <Spain|US Remote|LATAM Agency>
+Location: <City, Country>
+Mode: <On-site|Hybrid|Remote>
+Salary: <Range or "Not listed">
+Posted: <e.g. "2 days ago">
+Board: <LinkedIn|Indeed|InfoJobs|...>
+URL: <full URL>
+Why it matches: <2–3 sentences explaining the fit>
+
+[SCORE: 4/5] ...
+<<<EMAIL_END>>>

@@ -1,0 +1,87 @@
+# Copy this file to config/profile.yaml and customize.
+# profile.yaml is gitignored — your personal data stays local.
+
+# Personal info — appears in resume headers and outreach messages
+name: "Your Name"
+linkedin: "https://www.linkedin.com/in/your-handle"
+
+# Contact details. For multi-region applications you can list both an
+# in-country contact and an abroad one — the resume generator picks the
+# right one based on the job's market.
+contact:
+  primary_email: "you@example.com"
+
+  # Used for Spain / EU applications (if applicable)
+  spain:
+    location: "Madrid, Spain"
+    phone: "+34 600 00 00 00"
+
+  # Used for US / LATAM applications
+  americas:
+    location: "Your City, Your Country"
+    phone: "+1 555 555 5555"
+
+# Years of professional experience to claim on each resume variant.
+# Adjust per market if your story differs (e.g., total experience vs.
+# automation-specific experience).
+experience_years_total: 5
+experience_years_automation: 3
+
+# Languages and proficiency levels.
+languages:
+  - { name: "English", level: "C2" }
+  - { name: "Spanish", level: "Native" }
+
+# Technical stack — used by the LLM to match jobs and by the resume
+# generator to populate the Core Skills section.
+skills:
+  primary:
+    - "Power Automate (Cloud + Desktop)"
+    - "n8n"
+    - "Make / Integromat"
+    - "Zapier"
+    - "Python"
+  secondary:
+    - "REST APIs"
+    - "SQL"
+    - "Power BI"
+    - "DAX"
+
+# ──────────────────────────────────────────────────────────────────────
+# Visa strategy (only relevant if you're targeting a relocation)
+# ──────────────────────────────────────────────────────────────────────
+# Leave both blocks unset/empty if you don't need visa filtering.
+
+visa_strategy:
+  primary_path: "Spain Digital Nomad Visa"
+  income_floor_monthly_usd: 2600   # DNV ≈ €2,368/mo ≈ $2,600/mo
+  income_floor_monthly_eur: 2368
+
+  secondary_path: "Spain HQP Visa"
+  income_floor_annual_eur: 40077
+
+# ──────────────────────────────────────────────────────────────────────
+# Target markets — the LLM agent searches these and applies filters
+# ──────────────────────────────────────────────────────────────────────
+
+markets:
+  - name: "Spain"
+    country_code: "ES"
+    work_modes: ["On-site", "Hybrid", "Remote"]
+    cities: ["Madrid", "Barcelona", "Málaga", "Valencia", "Bilbao"]
+    salary_floor_eur_annual: 40000
+
+  - name: "US Remote"
+    country_code: "US"
+    work_modes: ["Remote"]
+    salary_floor_usd_monthly: 2600
+
+  - name: "LATAM Agency"
+    # Nearshore agencies that place LATAM talent at US companies
+    salary_floor_usd_monthly: 2600
+    agencies:
+      - "Revelo"
+      - "HireLATAM"
+      - "Hire With Near"
+      - "Toptal"
+      - "Torre.ai"

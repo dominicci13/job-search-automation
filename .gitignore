@@ -1,0 +1,45 @@
+# Secrets / personal config
+.env
+config/profile.yaml
+config/prompt.txt
+
+# Live user data — never commit
+data/
+Jobs/
+found_jobs.txt
+*.xlsx
+!examples/*.xlsx
+!**/template/*.xlsx
+
+# Resumes — provide your own, don't commit live ones
+*.docx
+*.pdf
+!docs/**/*.png
+!docs/**/*.jpg
+
+# Runtime artifacts
+logs/
+*.log
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.ruff_cache/
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Vector DBs / caches
+*.db
+*.sqlite
+*.sqlite3
+
+# Tasks (working notes)
+tasks/

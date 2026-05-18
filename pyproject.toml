@@ -1,0 +1,26 @@
+[project]
+name = "job-search-automation"
+version = "0.1.0"
+description = "End-to-end LLM-driven job search automation: scheduled launchd runs, multi-market search via Claude CLI, Excel tracker, and polished HTML email digests."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { file = "LICENSE" }
+authors = [{ name = "Brian Ramirez" }]
+keywords = ["job-search", "automation", "llm", "claude", "macos", "launchd"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+extend-exclude = ["docs/"]
+
+[tool.ruff.lint]
+# Pyflakes (F) + pycodestyle errors (E) + import order (I) + bugbear (B).
+# Keep the set tight on purpose — this is a small scripts repo, not a library.
+select = ["E", "F", "I", "B"]
+ignore = [
+    "E501",  # long lines — embedded HTML/CSS strings legitimately exceed 100
+    "E402",  # module-level import not at top — tests need sys.path setup first
+    "E701",  # multi-statement on one line — used intentionally for compact
+    "E702",  # axes setup blocks in matplotlib code (ax.set_xlim(0,1); …)
+    "E741",  # ambiguous var name — matplotlib idioms like `for l, c in …`
+]
