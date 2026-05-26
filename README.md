@@ -112,9 +112,10 @@ which mis-parses any `multipart/mixed` structure as an attachment.
 
 ---
 
+## Author
+
+Built by **Brian Ramirez** ([@dominicci13](https://github.com/dominicci13)) — automation & AI workflow specialist. More on my [GitHub profile](https://github.com/dominicci13) and [LinkedIn](https://linkedin.com/in/bdramirez).
+
 ## License
 
 MIT — see [LICENSE](LICENSE).
-
-Built by [Brian Ramirez](https://github.com/dominicci13). If you adapt this to
-your own job search, I'd love to hear what changed.
